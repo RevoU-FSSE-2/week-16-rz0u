@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  email    String   @unique
+  password String
+  role     RoleType
+  books    Post[]
+}
+
+enum RoleType {
+  Publisher
+  Author
+  User
+}
+
+model Post {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+
+  author   User? @relation(fields: [authorId], references: [id])
+  authorId Int?  @unique
+}

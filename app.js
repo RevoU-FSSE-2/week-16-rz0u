@@ -1,52 +1,18 @@
-// Environment
-import dotenv from "dotenv";
-dotenv.config();
-import express from "express";
-// import OpenApiValidator from "express-openapi-validator";
-import pkg from "express-openapi-validator";
-const OpenApiValidator = pkg;
-import { databaseMiddleware } from "./middleware/database-middleware.js";
-import { userRouter } from "./routes/user-router.js";
-import { patientRouter } from "./routes/patient-router.js";
-import { recordRouter } from "./routes/record-router.js";
-import { authenticationMiddleware } from "./middleware/auth-middleware.js";
-import fs from "fs";
-import yaml from "yaml";
-import swaggerUi from "swagger-ui-express";
-
+const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
+const applyMiddleware = require("./middleware");
+const userRouter = require("./routes/userRoutes");
+const postRouter = require("./routes/postRoutes");
 
-app.use(express.json());
+applyMiddleware(app);
 
-const openApiPath = "./doc/openapi.yaml";
-const file = fs.readFileSync(openApiPath, "utf-8");
-const swaggerDocument = yaml.parse(file);
+app.use("/api/user", userRouter);
+app.use("/api", postRouter);
 
-// Swagger UI Setup
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// OpenAPI Validator
-app.use(
-  OpenApiValidator.middleware({
-    apiSpec: "./doc/openapi.yaml",
-    validateRequests: true,
-  })
-);
-
-// Database Connection
-app.use(databaseMiddleware);
-
-// Import Router
-app.use("/users", userRouter);
-app.use("/patients", authenticationMiddleware, patientRouter);
-app.use("/records", authenticationMiddleware, recordRouter);
-
-// App Listen
 app.get("/", (req, res) => {
-  res.send("RevoU Milestone 2!");
+  res.send("Hello World!");
 });
 
-app.listen(port, () => {
-  console.log(`server running on localhost:${port}`);
+app.listen(3000, () => {
+  console.log("app running on port 3000");
 });
