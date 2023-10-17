@@ -1,10 +1,10 @@
 const Post = require("../models/Post");
 
 exports.createPost = async (req, res) => {
-  const { title, content } = req.body;
-  const post = await Post.create({ title, content });
-  post.authorId = req.user.id;
-  await post.save();
+  const { title, description } = req.body;
+  const authorId = req.user.id;
+  console.log(req.user.id, "======================user id");
+  const post = await Post.create({ title, description, authorId });
   res.status(201).json(post);
 };
 

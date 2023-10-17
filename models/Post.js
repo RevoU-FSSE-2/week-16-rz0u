@@ -2,9 +2,9 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 class Post {
-  static async create({ title, description }) {
+  static async create({ title, description, authorId }) {
     return await prisma.post.create({
-      data: { title, description },
+      data: { title, description, authorId },
     });
   }
   static async get(fieldValuePair, options) {

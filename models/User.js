@@ -4,9 +4,14 @@ const jwt = require("jsonwebtoken");
 const prisma = new PrismaClient();
 
 class User {
-  static async create({ username, email, password }) {
+  static async create({ username, email, password, role }) {
     return await prisma.user.create({
-      data: { username, email, password: this.make_password(password) },
+      data: {
+        username,
+        email,
+        password: this.make_password(password),
+        role: role,
+      },
     });
   }
   static async get(fieldValuePair, options) {

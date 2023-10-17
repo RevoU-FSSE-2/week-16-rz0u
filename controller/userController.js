@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const cache = require("memory-cache");
 
 const sendEmail = (email, key) => {
   console.log(`Subject: Password reset request`);
@@ -15,7 +16,9 @@ exports.login_session = async (req, res) => {
     res.status(401).json({ error: "Invalid username or password" });
     return;
   }
-  const { accessToken, expireAt, refreshToken } = User.generateToken(user);
+  const { accessToken, expireAt, refreshToken } = await User.generateToken(
+    user
+  );
   res.cookie("accessToken", accessToken, { httpOnly: true, expire: expireAt });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
@@ -33,7 +36,7 @@ exports.loginUser = async (req, res) => {
     res.status(401).json({ error: "Invalid username or password" });
     return;
   }
-  const responseToken = User.generateToken(user);
+  const responseToken = await User.generateToken(user);
   res.json(responseToken);
 };
 
@@ -72,7 +75,7 @@ exports.passwordReset = async (req, res) => {
     return;
   }
 
-  await user.update({ password: User.make_password(password) });
+  await User.update(user.id, { password: User.make_password(password) });
   // jika sukses kunci dihapus
   cache.del(key);
   res.json({ message: "Password reset success" });

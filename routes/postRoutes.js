@@ -12,12 +12,12 @@ postRouter.get("/books", permission.is_authenticated, postController.getPosts);
 postRouter.patch(
   "/books",
   permission.is_authenticated,
-  postController.getPosts
+  postController.updatePost
 );
 postRouter.delete(
   "/books",
   permission.is_authenticated,
-  postController.getPosts
+  postController.deletePost
 );
 
 module.exports = postRouter;
